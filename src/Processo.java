@@ -40,12 +40,12 @@ public class Processo extends Thread {
         try {
             while (true) {
                 if (this.gerente == null) {
-                    System.out.println("Eleição");
+                    System.out.println("Eleição " + this.id);
                     this.semaforo.eleicao(this.id);
+                } else {
+                    System.out.println(this.enviarSolicitacao());
+                    sleep(2000);
                 }
-                //sleep(2000);
-                System.out.println(this.id);
-                System.out.println(this.enviarSolicitacao());
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
