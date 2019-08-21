@@ -31,18 +31,19 @@ public class Semaforo {
                     processo = p;
                 }
             }
-
+            for (Processo p : this.processos) {
+                p.setGerente(processo);
+            }
             try {
                 this.idEleito = (int) processo.getId();
+                //notifyAll();
                 System.out.println("Solicitação " + this.idEleito);
-                System.out.println(processo.enviarSolicitacao());
+                //System.out.println(processo.enviarSolicitacao());
             } catch (NullPointerException n) {
                 this.eleicao(id);
             }
 
-            for (Processo p : this.processos) {
-                p.setGerente(processo);
-            }
+
             this.isEleicao = false;
             return;
         } else {
