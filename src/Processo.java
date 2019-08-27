@@ -27,33 +27,39 @@ public class Processo extends Thread {
         this.id = id;
     }
 
-    public String enviarSolicitacao() {
-        return "Solicitação enviada pelo id " + this.id + " para o gerente " + this.gerente.id;
+    public String response(String soliticacao) {
+        return "Solicitação recebida: " + soliticacao;
     }
 
-    public String respostaSolicitacao(String soliticacao) {
-        return "Solicitação recebida: " + soliticacao;
+    public boolean testeSaudeInstancia() {
+        return true;
     }
 
     @Override
     public void run() {
-        try {
-            while (true) {
-                if (this.gerente == null) {
+        while (true) {
+            try {
+
+                if (this.gerente == null && !this.semaforo.getGerente().testeSaudeInstancia()) {
                     System.out.println("Eleição " + this.id);
                     this.semaforo.eleicao(this.id);
-                } else {
-                    System.out.println(this.enviarSolicitacao());
-                    sleep(2000);
+                } else if (this.gerente == null) {
+                    this.setGerente(this.semaforo.getGerente());
+                } else if (!this.semaforo.isEleicao() && this.semaforo.isProcessVerify()) {
+                    if (this.semaforo.requestGerente(this)) {
+                    } else {
+                        this.semaforo.eleicao(this.id);
+                    }
                 }
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (NullPointerException e) {
-            try {
-                this.semaforo.eleicao(this.id);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (NullPointerException e) {
+                try {
+                    this.semaforo.eleicao(this.id);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
             }
         }
     }
